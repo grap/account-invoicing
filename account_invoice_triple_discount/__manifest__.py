@@ -13,6 +13,7 @@
     "excludes": [
         "account_global_discount",
     ],
+    "post_init_hook": "post_init_hook",
     "data": ["report/invoice.xml", "views/account_move.xml"],
     "installable": True,
 }
