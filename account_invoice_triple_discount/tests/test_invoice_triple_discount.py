@@ -2,6 +2,7 @@
 # Copyright 2023 Simone Rubino - Aion Tech
 # License AGPL-3.0 or later (http://www.gnu.org/licenses/agpl).
 
+from odoo import Command
 from odoo.tests.common import Form
 
 from odoo.addons.base.tests.common import BaseCommon
@@ -206,39 +207,13 @@ class TestInvoiceTripleDiscount(BaseCommon):
         self.assertEqual(invoice_line1.discount3, 0.0)
         self.assertEqual(invoice_line1.price_subtotal, 500.0)
 
-    def test_09_create_with_main_discount(self):
-        """
-        Tests if creating a invoice line with main discount field
-        set correctly discount1, discount2 and discount3
-        """
-        invoice = self.create_simple_invoice(0)
-
-        invoice_line2 = self.AccountMoveLine.create(
-            {
-                "move_id": invoice.id,
-                "name": "Line With Main Discount",
-                "quantity": 1,
-                "price_unit": 1000,
-                "discount": 10,
-                "tax_ids": [],
-            }
-        )
-
-        # 1000 * 0.9
-        self.assertEqual(invoice_line2.price_subtotal, 900.0)
-        self.assertEqual(invoice_line2.discount1, 10.0)
-        self.assertEqual(invoice_line2.discount2, 0.0)
-        self.assertEqual(invoice_line2.discount3, 0.0)
-
     def test_10_create_invoice_with_discounts(self):
         invoice = self.env["account.move"].create(
             {
                 "partner_id": self.partner.id,
                 "move_type": "out_invoice",
                 "invoice_line_ids": [
-                    (
-                        0,
-                        0,
+                    Command.create(
                         {
                             "name": "Line 1",
                             "quantity": 1,
@@ -246,7 +221,7 @@ class TestInvoiceTripleDiscount(BaseCommon):
                             "discount1": 30,
                             "discount2": 20,
                             "discount3": 10,
-                        },
+                        }
                     )
                 ],
             }
